@@ -33,9 +33,7 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
-# large PDF files (served via Supabase Storage in production)
-/public/pdfs/
-
+# public pdfs are now tracked on git to be served via Vercel CDN
 # vercel
 .vercel
 
