@@ -1,15 +1,7 @@
-import fs from "fs";
-import path from "path";
 import { getCourses } from "@/lib/queries";
 import { getCurrentUser, hasAccessToCollection } from "@/lib/access";
 import { getCollectionFirstItemMap, getCompletedItemIds } from "@/lib/progress";
 import { LearnClient } from "./learn-client";
-
-// Helper checking function
-function checkMdxExists(slug: string) {
-    const p = path.join(process.cwd(), "content", "ebooks", `${slug}.mdx`);
-    return fs.existsSync(p);
-}
 
 // Static fallback
 const FALLBACK_EBOOKS = [

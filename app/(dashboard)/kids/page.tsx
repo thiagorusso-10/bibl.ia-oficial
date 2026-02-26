@@ -2,14 +2,6 @@ import { getKidsResources } from "@/lib/queries";
 import { getCurrentUser, hasAccessToCollection } from "@/lib/access";
 import { getCompletedItemIds } from "@/lib/progress";
 import { KidsClient, type KidsActivity, type KidsStory } from "./kids-client";
-import fs from "fs";
-import path from "path";
-
-// Helper to check if MDX exists
-function checkMdxExists(slug: string) {
-    const p = path.join(process.cwd(), "content", "ebooks", `${slug}.mdx`);
-    return fs.existsSync(p);
-}
 
 // Static fallback — activities
 const FALLBACK_ACTIVITIES: KidsActivity[] = [
