@@ -16,8 +16,11 @@ const merriweather = Merriweather({
   weight: ["300", "400", "700"],
 });
 
+const rawUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+const appUrl = rawUrl.startsWith("http") ? rawUrl : `https://${rawUrl}`;
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
+  metadataBase: new URL(appUrl),
   title: {
     default: "BIBL.IA OFICIAL — Estudo Teológico & Fun Bible Kids",
     template: "%s | BIBL.IA OFICIAL",
