@@ -2,7 +2,8 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
 
-const connectionString = process.env.DATABASE_URL!;
+// Fallback dummy URL prevents Node.js from fatal crashing on boot if env is missing
+const connectionString = process.env.DATABASE_URL || "postgres://dummy:dummy@localhost:5432/dummy";
 
 const client = postgres(connectionString, {
     idle_timeout: 20,
