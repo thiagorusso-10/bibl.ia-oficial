@@ -61,11 +61,9 @@ export default async function ReadPage({ params }: PageProps) {
         notFound();
     }
 
-    // Verify the PDF file actually exists on disk
-    const pdfAbsPath = path.join(process.cwd(), "public", ebookInfo.pdfPath);
-    if (!fs.existsSync(pdfAbsPath)) {
-        notFound();
-    }
+    // We trust that the map contains valid paths that exist in the /public folder
+    // On Vercel, the public folder is served by the Edge network, so fs.existsSync 
+    // inside a Serverless Function path might fail.
 
     return (
         <EbookReader title={ebookInfo.title} slug={slug}>
