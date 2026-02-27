@@ -18,13 +18,17 @@ async function processIcons() {
         fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    // PWA manifest icons
-    await sharp(inputImagePath).resize(192, 192).toFile(path.join(outputDir, 'icon-192x192.png'));
-    await sharp(inputImagePath).resize(512, 512).toFile(path.join(outputDir, 'icon-512x512.png'));
+    // Flatten with black background to prevent iOS from adding white borders to transparent PNGs
+    const processImage = (size, dest) =>
+        sharp(inputImagePath)
+            .resize(size, size)
+            .flatten({ background: '#000000' })
+            .toFile(dest);
 
-    // Next.js standard App Icons
-    await sharp(inputImagePath).resize(512, 512).toFile(path.join(appRoot, 'icon.png'));
-    await sharp(inputImagePath).resize(180, 180).toFile(path.join(appRoot, 'apple-icon.png'));
+    await processImage(192, path.join(outputDir, 'icon-192x192.png'));
+    await processImage(512, path.join(outputDir, 'icon-512x512.png'));
+    await processImage(512, path.join(appRoot, 'icon.png'));
+    await processImage(180, path.join(appRoot, 'apple-icon.png'));
 
     console.log('All icons generated successfully!');
 }
