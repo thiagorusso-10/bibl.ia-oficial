@@ -21,7 +21,8 @@ async function processIcons() {
     // Flatten with black background to prevent iOS from adding white borders to transparent PNGs
     const processImage = (size, dest) =>
         sharp(inputImagePath)
-            .resize(size, size)
+            .trim()
+            .resize(size, size, { fit: 'cover' })
             .flatten({ background: '#000000' })
             .toFile(dest);
 
