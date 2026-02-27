@@ -5,16 +5,21 @@ export default function manifest(): MetadataRoute.Manifest {
         name: "BIBL.IA OFICIAL",
         short_name: "BIBL.IA",
         description: "Plataforma de ensino teológico e atividades bíblicas.",
-        start_url: "/dashboard",
+        start_url: "/",
         display: "standalone",
         background_color: "#fafafa",
         theme_color: "#ffffff",
         icons: [
             {
-                src: "/icon",
-                sizes: "any",
-                type: "image/svg+xml",
+                src: "/icons/icon-192x192.png",
+                sizes: "192x192",
+                type: "image/png"
             },
+            {
+                src: "/icons/icon-512x512.png",
+                sizes: "512x512",
+                type: "image/png"
+            }
         ],
     };
 }
