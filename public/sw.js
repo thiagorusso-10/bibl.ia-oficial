@@ -1,8 +1,10 @@
-const CACHE_NAME = "biblia-pwa-v1";
+const CACHE_NAME = "biblia-pwa-v2";
 const ASSETS_TO_CACHE = [
     "/",
+    "/dashboard",
+    "/learn",
+    "/kids",
     "/manifest.json",
-    "/icon",
     "/icons/icon-192x192.png",
     "/icons/icon-512x512.png",
 ];
