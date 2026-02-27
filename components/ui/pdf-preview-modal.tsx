@@ -81,7 +81,7 @@ export function PdfPreviewModal({
             {/* PDF Viewer */}
             <div className="flex-1 relative">
                 <iframe
-                    src={`${pdfUrl}#toolbar=1&navpanes=0&view=FitH`}
+                    src={`${pdfUrl}#toolbar=0&navpanes=0&view=FitH`}
                     className="absolute inset-0 w-full h-full"
                     title={`Preview: ${title}`}
                 />

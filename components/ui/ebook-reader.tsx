@@ -61,7 +61,6 @@ export function EbookReader({ title, slug, children }: EbookReaderProps) {
 
     return (
         <div className={`fixed inset-0 z-50 flex flex-col transition-colors duration-300 ${theme === "dark" ? "bg-zinc-950 text-zinc-100 dark" : "bg-[#FFFBEB] text-black"}`}>
-            {/* Header */}
             <header className={`shrink-0 flex items-center justify-between p-4 border-b-4 transition-colors ${theme === "dark" ? "border-zinc-800 bg-zinc-900" : "border-black bg-white"}`}>
                 <div className="flex items-center gap-4">
                     <Link href="/learn">
@@ -73,9 +72,6 @@ export function EbookReader({ title, slug, children }: EbookReaderProps) {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <NeoButton onClick={cycleFontSize} variant="outline" className={`p-3 ${theme === "dark" ? "border-zinc-700 bg-zinc-800 text-white hover:bg-zinc-700 hover:shadow-none" : ""}`}>
-                        <Type className="w-5 h-5" />
-                    </NeoButton>
                     <NeoButton onClick={toggleTheme} variant="outline" className={`p-3 ${theme === "dark" ? "border-zinc-700 bg-zinc-800 text-[#FDE047] hover:bg-zinc-700 hover:shadow-none" : "text-[#A855F7]"}`}>
                         {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
                     </NeoButton>
