@@ -56,8 +56,8 @@ export function LandingClient({ products }: { products: ProductCard[] }) {
                 </Link>
                 <div className="flex gap-4">
                     <Link href="/sign-in">
-                        <NeoButton variant="outline" size="sm" className="font-bold border-2 border-black bg-white hover:bg-zinc-100 transition-colors hidden md:flex">
-                            Acessar Conta
+                        <NeoButton variant="outline" size="sm" className="font-bold border-2 border-black bg-white hover:bg-zinc-100 transition-colors px-3 md:px-4">
+                            Entrar
                         </NeoButton>
                     </Link>
                     <Link href="#planos">
