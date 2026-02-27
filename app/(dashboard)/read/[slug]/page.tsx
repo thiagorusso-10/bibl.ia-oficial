@@ -13,9 +13,10 @@ export const viewport: Viewport = {
 };
 
 interface PageProps {
-    params: {
+    params: Promise<{
         slug: string;
-    };
+    }>;
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // Map slugs to their PDF paths and display titles
@@ -59,22 +60,25 @@ const EBOOK_PDF_MAP: Record<string, { pdfPath: string; title: string }> = {
     },
 };
 
-export default async function ReadPage({ params }: PageProps) {
+export default async function ReadPage({ params, searchParams }: PageProps) {
     const { slug } = await params;
+    const resolvedSearchParams = await searchParams;
+    const from = resolvedSearchParams?.from;
+    const returnUrl = from === "kids" ? "/kids" : "/learn";
 
-    // Check if we have a PDF for this slug
-    const ebookInfo = EBOOK_PDF_MAP[slug];
-
-    if (!ebookInfo) {
-        notFound();
-    }
+    // Check if we have a PDF for this slug in the hardcoded map
+    // If not, use the slug directly as a fallback for the database-seeded items
+    const ebookInfo = EBOOK_PDF_MAP[slug] || {
+        pdfPath: `/pdfs/kids/historias/${slug}.pdf`,
+        title: slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+    };
 
     // We trust that the map contains valid paths that exist in the /public folder
     // On Vercel, the public folder is served by the Edge network, so fs.existsSync 
     // inside a Serverless Function path might fail.
 
     return (
-        <EbookReader title={ebookInfo.title} slug={slug}>
+        <EbookReader title={ebookInfo.title} slug={slug} returnUrl={returnUrl}>
             <PdfEbookViewer fileUrl={ebookInfo.pdfPath} />
         </EbookReader>
     );

@@ -8,10 +8,11 @@ import { NeoButton } from "@/components/ui/neo-button";
 interface EbookReaderProps {
     title: string;
     slug: string;
+    returnUrl?: string;
     children: React.ReactNode;
 }
 
-export function EbookReader({ title, slug, children }: EbookReaderProps) {
+export function EbookReader({ title, slug, returnUrl = "/learn", children }: EbookReaderProps) {
     const [theme, setTheme] = useState<"light" | "dark">("light");
     const [fontSize, setFontSize] = useState<"text-base" | "text-lg" | "text-xl">("text-lg");
     const [progress, setProgress] = useState(0);
@@ -63,7 +64,7 @@ export function EbookReader({ title, slug, children }: EbookReaderProps) {
         <div className={`fixed inset-0 z-50 flex flex-col transition-colors duration-300 ${theme === "dark" ? "bg-zinc-950 text-zinc-100 dark" : "bg-[#FFFBEB] text-black"}`}>
             <header className={`shrink-0 flex items-center justify-between p-4 border-b-4 transition-colors ${theme === "dark" ? "border-zinc-800 bg-zinc-900" : "border-black bg-white"}`}>
                 <div className="flex items-center gap-4">
-                    <Link href="/learn">
+                    <Link href={returnUrl}>
                         <NeoButton variant="outline" className={`p-3 ${theme === "dark" ? "border-zinc-700 bg-zinc-800 text-white hover:bg-zinc-700 hover:shadow-none" : ""}`}>
                             <ArrowLeft className="w-5 h-5" />
                         </NeoButton>
@@ -97,7 +98,7 @@ export function EbookReader({ title, slug, children }: EbookReaderProps) {
                     <div className={`mt-24 p-8 border-4 text-center max-w-3xl mx-auto ${theme === "dark" ? "border-zinc-800 bg-zinc-900" : "border-black bg-[#FDE047] shadow-[8px_8px_0px_#000]"}`}>
                         <h3 className="font-black text-2xl md:text-3xl uppercase mb-2">Fim da Leitura</h3>
                         <p className="font-bold font-serif mb-8 text-lg">Você chegou ao fim deste conteúdo. Que a palavra ressoe no seu coração!</p>
-                        <Link href="/learn">
+                        <Link href={returnUrl}>
                             <NeoButton size="lg" className={`w-full md:w-auto px-12 ${theme === "dark" ? "bg-zinc-100 text-black border-zinc-700 hover:shadow-none" : "bg-black text-white hover:bg-[#A855F7] hover:text-black border-2 shadow-[4px_4px_0px_#000] hover:shadow-none hover:translate-y-1 hover:translate-x-1"}`}>
                                 Voltar para o App
                             </NeoButton>

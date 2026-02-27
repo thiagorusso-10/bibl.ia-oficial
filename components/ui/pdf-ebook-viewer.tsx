@@ -46,16 +46,34 @@ export function PdfEbookViewer({ fileUrl }: PdfEbookViewerProps) {
         return () => observer.disconnect();
     }, [numPages]);
 
-    // Measure container width for responsive rendering
+    // Measure container width for responsive rendering (with debounce for mobile zoom stability)
     useEffect(() => {
+        let initialWidth = 0;
         function updateWidth() {
             if (containerRef.current) {
-                setContainerWidth(containerRef.current.clientWidth);
+                const newWidth = containerRef.current.clientWidth;
+                // Only update if it's the first time or if the width changed significantly (e.g., orientation change)
+                // This prevents iOS Safari visual viewport pinch-to-zoom from firing continuous resize events
+                // which causes react-pdf to re-render in an infinite loop and makes the screen "dance"
+                if (initialWidth === 0 || Math.abs(initialWidth - newWidth) > 50) {
+                    initialWidth = newWidth;
+                    setContainerWidth(newWidth);
+                }
             }
         }
         updateWidth();
-        window.addEventListener("resize", updateWidth);
-        return () => window.removeEventListener("resize", updateWidth);
+
+        let timeoutId: NodeJS.Timeout;
+        const resizeHandler = () => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(updateWidth, 300);
+        };
+
+        window.addEventListener("resize", resizeHandler);
+        return () => {
+            clearTimeout(timeoutId);
+            window.removeEventListener("resize", resizeHandler);
+        };
     }, []);
 
     const onDocumentLoadSuccess = useCallback(({ numPages }: { numPages: number }) => {

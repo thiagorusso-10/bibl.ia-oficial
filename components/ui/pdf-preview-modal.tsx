@@ -52,10 +52,10 @@ export function PdfPreviewModal({
                         href={pdfUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="neo-border bg-zinc-800 text-white px-3 py-1.5 text-xs font-bold uppercase tracking-wide inline-flex items-center gap-1.5 hover:bg-zinc-700 transition-colors"
+                        className="neo-border bg-zinc-800 text-white px-3 py-1.5 text-xs font-bold uppercase tracking-wide hidden md:inline-flex items-center gap-1.5 hover:bg-zinc-700 transition-colors"
                     >
                         <Maximize2 className="w-3.5 h-3.5" strokeWidth={2} />
-                        <span className="hidden sm:inline">Tela Cheia</span>
+                        <span>Tela Cheia</span>
                     </a>
                     {/* Download */}
                     {canDownload && (

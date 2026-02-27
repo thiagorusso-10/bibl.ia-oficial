@@ -39,8 +39,8 @@ export function DashboardClient({ ebooks, completedCount, kidsCount }: Dashboard
                 className="relative overflow-hidden border-4 border-black bg-[#A855F7] text-black p-8 md:p-16 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]"
             >
                 <div className="absolute top-[-20px] right-[-20px] w-32 h-32 bg-[#FDE047] rounded-full border-4 border-black z-0" />
-                <div className="absolute top-[40%] right-[10%] w-16 h-16 bg-[#FDE047] rounded-full border-4 border-black z-0" />
-                <div className="absolute top-[20%] right-[30%] w-8 h-8 bg-black rounded-full z-0" />
+                <div className="hidden md:block absolute top-[40%] right-[10%] w-16 h-16 bg-[#FDE047] rounded-full border-4 border-black z-0" />
+                <div className="hidden md:block absolute top-[20%] right-[30%] w-8 h-8 bg-black rounded-full z-0" />
                 <div className="absolute bottom-[-20px] left-[-20px] w-40 h-40 bg-[#10B981] rounded-full border-4 border-black z-0" />
 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
@@ -93,34 +93,43 @@ export function DashboardClient({ ebooks, completedCount, kidsCount }: Dashboard
                 className="grid grid-cols-1 md:grid-cols-3 gap-8"
             >
                 <AnimatedCard delay={0.1}>
-                    <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all cursor-default h-full flex flex-col items-center justify-center relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-[#FDE047] translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-0" />
+                    <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer h-full flex flex-col items-center justify-center relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-[#FDE047] translate-y-full group-hover:translate-y-0 group-active:translate-y-0 transition-transform duration-300 z-0" />
                         <div className="relative z-10 text-center">
-                            <BookOpen className="w-12 h-12 mb-2 mx-auto stroke-black group-hover:scale-110 transition-transform" strokeWidth={2.5} />
+                            <BookOpen className="w-12 h-12 mb-2 mx-auto stroke-black group-hover:scale-110 group-active:scale-110 transition-transform" strokeWidth={2.5} />
                             <p className="text-6xl font-black">{ebooks.length}</p>
                             <p className="text-sm font-bold uppercase tracking-widest mt-1">Ebooks Disponíveis</p>
+                        </div>
+                        <div className="absolute bottom-2 right-2 md:hidden opacity-0 group-active:opacity-100 transition-opacity">
+                            <ArrowRight className="w-6 h-6 stroke-black" strokeWidth={3} />
                         </div>
                     </div>
                 </AnimatedCard>
 
                 <AnimatedCard delay={0.2}>
-                    <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all cursor-default h-full flex flex-col items-center justify-center relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-[#10B981] translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-0" />
+                    <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer h-full flex flex-col items-center justify-center relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-[#10B981] translate-y-full group-hover:translate-y-0 group-active:translate-y-0 transition-transform duration-300 z-0" />
                         <div className="relative z-10 text-center">
-                            <Baby className="w-12 h-12 mb-2 mx-auto stroke-black group-hover:scale-110 transition-transform" strokeWidth={2.5} />
+                            <Baby className="w-12 h-12 mb-2 mx-auto stroke-black group-hover:scale-110 group-active:scale-110 transition-transform" strokeWidth={2.5} />
                             <p className="text-6xl font-black">{kidsCount > 0 ? kidsCount : "20+"}</p>
                             <p className="text-sm font-bold uppercase tracking-widest mt-1">Atividades Kids</p>
+                        </div>
+                        <div className="absolute bottom-2 right-2 md:hidden opacity-0 group-active:opacity-100 transition-opacity">
+                            <ArrowRight className="w-6 h-6 stroke-black" strokeWidth={3} />
                         </div>
                     </div>
                 </AnimatedCard>
 
                 <AnimatedCard delay={0.3}>
-                    <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all cursor-default h-full flex flex-col items-center justify-center relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-[#EC4899] translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-0" />
+                    <div className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer h-full flex flex-col items-center justify-center relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-[#EC4899] translate-y-full group-hover:translate-y-0 group-active:translate-y-0 transition-transform duration-300 z-0" />
                         <div className="relative z-10 text-center">
-                            <Trophy className="w-12 h-12 mb-2 mx-auto stroke-black group-hover:scale-110 transition-transform" strokeWidth={2.5} />
+                            <Trophy className="w-12 h-12 mb-2 mx-auto stroke-black group-hover:scale-110 group-active:scale-110 transition-transform" strokeWidth={2.5} />
                             <p className="text-6xl font-black">{completedCount}</p>
                             <p className="text-sm font-bold uppercase tracking-widest mt-1">Conquistas</p>
+                        </div>
+                        <div className="absolute bottom-2 right-2 md:hidden opacity-0 group-active:opacity-100 transition-opacity">
+                            <ArrowRight className="w-6 h-6 stroke-black" strokeWidth={3} />
                         </div>
                     </div>
                 </AnimatedCard>

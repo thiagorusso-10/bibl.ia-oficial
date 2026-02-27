@@ -159,8 +159,8 @@ export function KidsClient({
                         <button
                             onClick={() => setActiveFilter("all")}
                             className={`border-2 border-black px-4 py-2 text-xs font-black uppercase tracking-wider transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${activeFilter === "all"
-                                ? "bg-black text-white scale-110"
-                                : "bg-white hover:bg-[#10B981]"
+                                ? "bg-[#a3e635] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]"
+                                : "bg-white hover:bg-[#10B981] active:bg-[#10B981]"
                                 }`}
                         >
                             Todos
@@ -170,8 +170,8 @@ export function KidsClient({
                                 key={cat}
                                 onClick={() => setActiveFilter(cat)}
                                 className={`border-2 border-black px-4 py-2 text-xs font-black uppercase tracking-wider transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${activeFilter === cat
-                                    ? "bg-black text-white scale-110"
-                                    : "bg-white hover:bg-[#10B981]"
+                                    ? "bg-[#a3e635] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-[2px]"
+                                    : "bg-white hover:bg-[#10B981] active:bg-[#10B981]"
                                     }`}
                             >
                                 {cat}
@@ -291,7 +291,7 @@ export function KidsClient({
                                 <div className="p-4 bg-zinc-50 border-t-4 border-black flex gap-3">
                                     {hasAccess ? (
                                         <>
-                                            <Link href={`/read/${story.id}`} className="flex-1">
+                                            <Link href={`/read/${story.id}?from=kids`} className="flex-1">
                                                 <NeoButton size="sm" className="w-full bg-[#10B981] hover:bg-[#34D399] text-black border-2 shadow-[2px_2px_0px_0px_#000]">Leia Online</NeoButton>
                                             </Link>
                                             <a href={story.fileUrl} download className="flex-1">
@@ -300,7 +300,7 @@ export function KidsClient({
                                         </>
                                     ) : (
                                         <>
-                                            <Link href={`/read/${story.id}`} className="flex-1">
+                                            <Link href={`/read/${story.id}?from=kids`} className="flex-1">
                                                 <NeoButton size="sm" className="w-full bg-[#E9D5FF] border-2 shadow-[2px_2px_0px_0px_#000] text-black hover:bg-[#D8B4FE]">Amostra</NeoButton>
                                             </Link>
                                             <Link href="/precos" className="flex-1">
