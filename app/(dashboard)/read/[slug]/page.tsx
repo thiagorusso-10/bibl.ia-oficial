@@ -1,8 +1,16 @@
 import fs from "fs";
 import path from "path";
 import { notFound } from "next/navigation";
+import type { Viewport } from "next";
 import { EbookReader } from "@/components/ui/ebook-reader";
 import { PdfEbookViewer } from "@/components/ui/pdf-ebook-viewer";
+
+export const viewport: Viewport = {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+};
 
 interface PageProps {
     params: {
