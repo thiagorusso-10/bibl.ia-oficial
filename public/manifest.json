@@ -1,7 +1,7 @@
 {
     "name": "BIBL.IA OFICIAL",
     "short_name": "BIBL.IA",
-    "start_url": "/dashboard",
+    "start_url": "/",
     "display": "standalone",
     "background_color": "#FFFBEB",
     "theme_color": "#000000",

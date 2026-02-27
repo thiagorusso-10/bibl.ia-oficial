@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Merriweather } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { SWRegister } from "@/components/pwa/sw-register";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -67,7 +66,6 @@ export default function RootLayout({
           suppressHydrationWarning
           className={`${spaceGrotesk.variable} ${merriweather.variable} bg-zinc-50 text-black antialiased font-sans`}
         >
-          <SWRegister />
           {children}
         </body>
       </html>
