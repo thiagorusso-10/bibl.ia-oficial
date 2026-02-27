@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
+import { ZoomIn, ZoomOut } from "lucide-react";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
@@ -16,7 +17,12 @@ export function PdfEbookViewer({ fileUrl }: PdfEbookViewerProps) {
     const [numPages, setNumPages] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [containerWidth, setContainerWidth] = useState<number>(800);
+    const [scale, setScale] = useState<number>(1);
     const containerRef = useRef<HTMLDivElement>(null);
+
+    const handleZoomIn = () => setScale(s => Math.min(s + 0.25, 3));
+    const handleZoomOut = () => setScale(s => Math.max(s - 0.25, 0.5));
+    const handleZoomReset = () => setScale(1);
 
     // Track visible page using IntersectionObserver
     useEffect(() => {
@@ -94,10 +100,10 @@ export function PdfEbookViewer({ fileUrl }: PdfEbookViewerProps) {
                         >
                             <Page
                                 pageNumber={index + 1}
-                                width={pageWidth}
+                                width={pageWidth * scale}
                                 className="shadow-2xl rounded-md overflow-hidden"
                                 loading={
-                                    <div className="flex items-center justify-center bg-zinc-800/50 rounded-lg" style={{ width: pageWidth, height: pageWidth * 1.414 }}>
+                                    <div className="flex items-center justify-center bg-zinc-800/50 rounded-lg" style={{ width: pageWidth * scale, height: pageWidth * scale * 1.414 }}>
                                         <div className="w-6 h-6 border-2 border-zinc-600 border-t-[#60a5fa] rounded-full animate-spin" />
                                     </div>
                                 }
@@ -111,6 +117,21 @@ export function PdfEbookViewer({ fileUrl }: PdfEbookViewerProps) {
             {numPages > 0 && (
                 <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 bg-black/80 backdrop-blur-md text-white px-5 py-2.5 rounded-full border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.5)] z-50 font-serif font-bold text-sm md:text-base animate-in slide-in-from-bottom-5 flex items-center gap-2">
                     <span className="text-[#60a5fa]">Página</span> {currentPage} <span className="text-zinc-500 font-sans font-normal mx-1">de</span> {numPages}
+                </div>
+            )}
+
+            {/* Zoom Controls */}
+            {numPages > 0 && (
+                <div className="fixed bottom-20 right-6 md:bottom-24 md:right-10 flex flex-col gap-2 z-50 animate-in slide-in-from-right-5">
+                    <button onClick={handleZoomIn} className="bg-black/80 backdrop-blur-md text-white p-3 rounded-full border border-white/20 shadow-lg hover:bg-black transition-colors" aria-label="Aumentar Zoom">
+                        <ZoomIn className="w-5 h-5" />
+                    </button>
+                    <button onClick={handleZoomReset} className="bg-black/80 backdrop-blur-md text-white px-1 py-2 rounded-full border border-white/20 shadow-lg hover:bg-black transition-colors font-bold text-[10px]" aria-label="Resetar Zoom">
+                        {Math.round(scale * 100)}%
+                    </button>
+                    <button onClick={handleZoomOut} className="bg-black/80 backdrop-blur-md text-white p-3 rounded-full border border-white/20 shadow-lg hover:bg-black transition-colors" aria-label="Diminuir Zoom">
+                        <ZoomOut className="w-5 h-5" />
+                    </button>
                 </div>
             )}
 
