@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { Viewport } from "next";
 import { EbookReader } from "@/components/ui/ebook-reader";
 import { PdfEbookViewer } from "@/components/ui/pdf-ebook-viewer";
+import { getCurrentUser, hasAccessToCollection } from "@/lib/access";
 
 export const viewport: Viewport = {
     width: "device-width",
@@ -77,9 +78,22 @@ export default async function ReadPage({ params, searchParams }: PageProps) {
     // On Vercel, the public folder is served by the Edge network, so fs.existsSync 
     // inside a Serverless Function path might fail.
 
+    // Access Check Logic for Paywall / Samples
+    const user = await getCurrentUser();
+    let hasAccess = false;
+
+    if (user) {
+        if (from === "kids") {
+            hasAccess = await hasAccessToCollection(user.id, "fun-bible-kids");
+        } else {
+            // Usually, specific Ebook collections share the exact same slug
+            hasAccess = await hasAccessToCollection(user.id, slug);
+        }
+    }
+
     return (
         <EbookReader title={ebookInfo.title} slug={slug} returnUrl={returnUrl}>
-            <PdfEbookViewer fileUrl={ebookInfo.pdfPath} />
+            <PdfEbookViewer fileUrl={ebookInfo.pdfPath} isSample={!hasAccess} />
         </EbookReader>
     );
 }
