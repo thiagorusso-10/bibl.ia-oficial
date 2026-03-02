@@ -52,29 +52,44 @@ export function PdfEbookViewer({ fileUrl, isSample = false }: PdfEbookViewerProp
     useEffect(() => {
         let initialWidth = 0;
         function updateWidth() {
+            // FIREWALL CONTRA CRASH NO SAFARI iOS (Pinch-to-zoom Memory Leak)
+            // Se o usuário está fazendo pinça (zoom in/out na tela), a visualViewport muda a escala.
+            // O Safari dispara eventos 'resize' em massa. Não podemos deixar o react-pdf re-renderizar o canvas agora.
+            if (window.visualViewport && window.visualViewport.scale !== 1) {
+                return;
+            }
+
             if (containerRef.current) {
                 const newWidth = containerRef.current.clientWidth;
                 // Only update if it's the first time or if the width changed significantly (e.g., orientation change)
-                // This prevents iOS Safari visual viewport pinch-to-zoom from firing continuous resize events
-                // which causes react-pdf to re-render in an infinite loop and makes the screen "dance"
                 if (initialWidth === 0 || Math.abs(initialWidth - newWidth) > 50) {
                     initialWidth = newWidth;
                     setContainerWidth(newWidth);
                 }
             }
         }
-        updateWidth();
+
+        // Timeout para garantir que o CSS carregou e a ref tem tamanho 
+        setTimeout(updateWidth, 100);
 
         let timeoutId: NodeJS.Timeout;
         const resizeHandler = () => {
             clearTimeout(timeoutId);
-            timeoutId = setTimeout(updateWidth, 300);
+            timeoutId = setTimeout(updateWidth, 500); // Debounce longo para não travar o scroll/zoom
+        };
+
+        const orientationHandler = () => {
+            clearTimeout(timeoutId);
+            setTimeout(updateWidth, 500); // Dá tempo pro celular deitar
         };
 
         window.addEventListener("resize", resizeHandler);
+        window.addEventListener("orientationchange", orientationHandler);
+
         return () => {
             clearTimeout(timeoutId);
             window.removeEventListener("resize", resizeHandler);
+            window.removeEventListener("orientationchange", orientationHandler);
         };
     }, []);
 
