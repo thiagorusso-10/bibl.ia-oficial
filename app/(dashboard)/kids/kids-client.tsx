@@ -250,11 +250,14 @@ export function KidsClient({
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <Link href="/precos" className="w-full">
-                                                    <NeoButton size="sm" className="w-full bg-[#EC4899] hover:bg-[#F472B6] border-2 text-sm font-bold shadow-[2px_2px_0px_0px_#000]">
-                                                        <Lock className="w-3 h-3 mr-1" /> Desbloquear
-                                                    </NeoButton>
-                                                </Link>
+                                                <div className="flex gap-2">
+                                                    <Link href={`/read/${resource.id}?from=kids`} className="flex-1">
+                                                        <NeoButton size="sm" className="w-full bg-[#E9D5FF] border-2 shadow-[2px_2px_0px_0px_#000] text-black hover:bg-[#D8B4FE]">Amostra</NeoButton>
+                                                    </Link>
+                                                    <Link href="/precos" className="flex-1">
+                                                        <NeoButton size="sm" className="w-full bg-[#EC4899] hover:bg-[#F472B6] text-white border-2 shadow-[2px_2px_0px_0px_#000]">Comprar</NeoButton>
+                                                    </Link>
+                                                </div>
                                             )}
                                         </div>
                                     </div>

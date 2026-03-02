@@ -1,4 +1,4 @@
-const CACHE_NAME = "biblia-pwa-v3";
+const CACHE_NAME = "biblia-pwa-v4";
 const ASSETS_TO_CACHE = [
     "/",
     "/dashboard",
@@ -36,35 +36,26 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
     if (event.request.method !== "GET") return;
 
-    if (ASSETS_TO_CACHE.some((asset) => event.request.url.includes(asset))) {
-        event.respondWith(
-            caches.match(event.request).then((cachedResponse) => {
-                const fetchPromise = fetch(event.request).then(
-                    (networkResponse) => {
-                        // Não tenta fazer cache de requisições opacas ou que o Next.js já consumiu o stream dinâmico
-                        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-                            return networkResponse;
-                        }
+    // Bypass SW caching for internal Next.js HMR and prefetch requests to avoid conflicts
+    if (event.request.url.includes("/_next/webpack-hmr") || event.request.url.includes("/_next/data")) return;
 
-                        const responseToCache = networkResponse.clone();
-                        caches.open(CACHE_NAME).then((cache) => {
-                            cache.put(event.request, responseToCache);
-                        });
-                        return networkResponse;
-                    }
-                ).catch(() => {
-                    // Ignora erro de rede, já que a gente já vai devolver o cachedResponse se ele existir.
-                });
-
-                return cachedResponse || fetchPromise;
-            })
-        );
-        return;
-    }
-
+    // NETWORK-FIRST STRATEGY: Always try network to get the freshest app state, 
+    // Fallback to cache only if offline or network fails.
     event.respondWith(
-        fetch(event.request).catch(() => {
-            return caches.match(event.request);
-        })
+        fetch(event.request)
+            .then((networkResponse) => {
+                // If the response is good, clone it and cache it for offline use
+                if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+                    const responseToCache = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(event.request, responseToCache);
+                    });
+                }
+                return networkResponse;
+            })
+            .catch(() => {
+                // Fallback to cache on network failure (offline mode)
+                return caches.match(event.request);
+            })
     );
 });

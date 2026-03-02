@@ -6,6 +6,8 @@ import { EbookReader } from "@/components/ui/ebook-reader";
 import { PdfEbookViewer } from "@/components/ui/pdf-ebook-viewer";
 import { getCurrentUser, hasAccessToCollection } from "@/lib/access";
 
+export const dynamic = "force-dynamic";
+
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
@@ -69,8 +71,15 @@ export default async function ReadPage({ params, searchParams }: PageProps) {
 
     // Check if we have a PDF for this slug in the hardcoded map
     // If not, use the slug directly as a fallback for the database-seeded items
-    const ebookInfo = EBOOK_PDF_MAP[slug] || {
-        pdfPath: `/pdfs/kids/historias/${slug}.pdf`,
+    let mappedEbook = EBOOK_PDF_MAP[slug];
+
+    // Auto-detect activities vs stories based on common slug prefixes or just check if it's an activity
+    // To be perfectly safe, if the slug isn't in EBOOK_PDF_MAP and isn't a story, we can assume it's an activity or a story.
+    // For Kids Activities, the fallback path is /pdfs/kids/[slug].pdf. For Kids Stories, it's /pdfs/kids/historias/[slug].pdf.
+    const isActivity = ["caca-palavras", "caligrafia", "caminhos-biblicos", "cruzadinha", "desenhos-biblicos", "detetive", "matematica-biblica", "pesquisa", "quiz", "ligue-as-sombras"].includes(slug);
+
+    const ebookInfo = mappedEbook || {
+        pdfPath: isActivity ? `/pdfs/kids/${slug}.pdf` : `/pdfs/kids/historias/${slug}.pdf`,
         title: slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
     };
 
