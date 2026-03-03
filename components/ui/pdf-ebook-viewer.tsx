@@ -13,6 +13,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 interface PdfEbookViewerProps {
     fileUrl: string;
     isSample?: boolean;
+    isLandscape?: boolean;
 }
 
 // Sub-componente mágico: reserva o espaço vertical correto
@@ -22,16 +23,19 @@ function VirtualizedPdfPage({
     pageNumber,
     pageWidth,
     isSample,
+    isLandscape,
     isLastSamplePage
 }: {
     pageNumber: number;
     pageWidth: number;
     isSample: boolean;
+    isLandscape?: boolean;
     isLastSamplePage: boolean;
 }) {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [isVisible, setIsVisible] = useState(false);
     const [hasRendered, setHasRendered] = useState(false); // Mantém carregado após primeiro scroll
+    const [realHeight, setRealHeight] = useState<number | null>(null);
 
     useEffect(() => {
         if (!wrapperRef.current) return;
@@ -53,19 +57,21 @@ function VirtualizedPdfPage({
         return () => observer.disconnect();
     }, []);
 
-    // Aspect ratio padrão para PDFs A4 é 1:1.414
-    const heightFallback = pageWidth * 1.414;
+    // Aspect ratio padrão para PDFs A4 é 1.414 (Portrait)
+    // Para Histórias Kids (Telas widescreen), usamos 0.5625 (16:9) como fallback.
+    const fallbackRatio = isLandscape ? 0.5625 : 1.414;
+    const currentHeight = realHeight || (pageWidth * fallbackRatio);
 
     return (
         <div
             ref={wrapperRef}
-            className="pdf-page-wrapper w-full flex justify-center mb-4 relative"
+            className="pdf-page-wrapper w-full flex justify-center mb-4 relative transition-all duration-300"
             data-page-number={pageNumber}
-            style={{ minHeight: heightFallback, width: pageWidth }}
+            style={{ minHeight: currentHeight, width: pageWidth }}
         >
             {/* Elemento fantasma para preservar o scroll nativo do navegador perfeitamente */}
             {!isVisible && !hasRendered && (
-                <div className="bg-zinc-100 flex items-center justify-center rounded-md shadow-sm" style={{ width: pageWidth, height: heightFallback }}>
+                <div className="bg-zinc-100 flex items-center justify-center rounded-md shadow-sm" style={{ width: pageWidth, height: currentHeight }}>
                     <div className="w-8 h-8 border-4 border-zinc-300 border-t-[#60a5fa] rounded-full animate-spin" />
                 </div>
             )}
@@ -79,6 +85,10 @@ function VirtualizedPdfPage({
                     renderTextLayer={true}
                     renderAnnotationLayer={false}
                     loading={null}
+                    onLoadSuccess={({ originalHeight, originalWidth }) => {
+                        // Quando o PDF carrega de fato, salva a altura real absoluta para evitar "dança" na tela
+                        setRealHeight(pageWidth * (originalHeight / originalWidth));
+                    }}
                 />
             )}
 
@@ -90,7 +100,7 @@ function VirtualizedPdfPage({
     );
 }
 
-export function PdfEbookViewer({ fileUrl, isSample = false }: PdfEbookViewerProps) {
+export function PdfEbookViewer({ fileUrl, isSample = false, isLandscape = false }: PdfEbookViewerProps) {
     const [numPages, setNumPages] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [containerWidth, setContainerWidth] = useState<number>(800);
@@ -205,6 +215,7 @@ export function PdfEbookViewer({ fileUrl, isSample = false }: PdfEbookViewerProp
                             pageWidth={pageWidth}
                             isSample={isSample}
                             isLastSamplePage={index === renderPages - 1}
+                            isLandscape={isLandscape}
                         />
                     ))
                 }

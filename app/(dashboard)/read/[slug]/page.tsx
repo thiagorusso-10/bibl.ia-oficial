@@ -77,6 +77,7 @@ export default async function ReadPage({ params, searchParams }: PageProps) {
     // To be perfectly safe, if the slug isn't in EBOOK_PDF_MAP and isn't a story, we can assume it's an activity or a story.
     // For Kids Activities, the fallback path is /pdfs/kids/[slug].pdf. For Kids Stories, it's /pdfs/kids/historias/[slug].pdf.
     const isActivity = ["caca-palavras", "caligrafia", "caminhos-biblicos", "cruzadinha", "desenhos-biblicos", "detetive", "matematica-biblica", "pesquisa", "quiz", "ligue-as-sombras"].includes(slug);
+    const isKidsStory = from === "kids" && !isActivity;
 
     const ebookInfo = mappedEbook || {
         pdfPath: isActivity ? `/pdfs/kids/${slug}.pdf` : `/pdfs/kids/historias/${slug}.pdf`,
@@ -102,7 +103,7 @@ export default async function ReadPage({ params, searchParams }: PageProps) {
 
     return (
         <EbookReader title={ebookInfo.title} slug={slug} returnUrl={returnUrl}>
-            <PdfEbookViewer fileUrl={ebookInfo.pdfPath} isSample={!hasAccess} />
+            <PdfEbookViewer fileUrl={ebookInfo.pdfPath} isSample={!hasAccess} isLandscape={isKidsStory} />
         </EbookReader>
     );
 }
