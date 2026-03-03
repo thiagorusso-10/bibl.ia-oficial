@@ -15,6 +15,81 @@ interface PdfEbookViewerProps {
     isSample?: boolean;
 }
 
+// Sub-componente mágico: reserva o espaço vertical correto
+// Mas só injeta o <Page canvas> pesado quando a página está na tela (IntersectionObserver).
+// Isso evita crashear a memória RAM (OOM) do Safari iOS ao tentar carregar dezenas de Canvas de uma vez!
+function VirtualizedPdfPage({
+    pageNumber,
+    pageWidth,
+    isSample,
+    isLastSamplePage
+}: {
+    pageNumber: number;
+    pageWidth: number;
+    isSample: boolean;
+    isLastSamplePage: boolean;
+}) {
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(false);
+    const [hasRendered, setHasRendered] = useState(false); // Mantém carregado após primeiro scroll
+
+    useEffect(() => {
+        if (!wrapperRef.current) return;
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    setHasRendered(true);
+                } else {
+                    // Descarrega o Canvas pesado se a página sair MUITO de vista para salvar RAM
+                    setIsVisible(false);
+                }
+            },
+            // Margem abrangente: carrega 2 páginas pra cima e 2 pra baixo antecipadamente.
+            { rootMargin: "2500px 0px" }
+        );
+
+        observer.observe(wrapperRef.current);
+        return () => observer.disconnect();
+    }, []);
+
+    // Aspect ratio padrão para PDFs A4 é 1:1.414
+    const heightFallback = pageWidth * 1.414;
+
+    return (
+        <div
+            ref={wrapperRef}
+            className="pdf-page-wrapper w-full flex justify-center mb-4 relative"
+            data-page-number={pageNumber}
+            style={{ minHeight: heightFallback, width: pageWidth }}
+        >
+            {/* Elemento fantasma para preservar o scroll nativo do navegador perfeitamente */}
+            {!isVisible && !hasRendered && (
+                <div className="bg-zinc-100 flex items-center justify-center rounded-md shadow-sm" style={{ width: pageWidth, height: heightFallback }}>
+                    <div className="w-8 h-8 border-4 border-zinc-300 border-t-[#60a5fa] rounded-full animate-spin" />
+                </div>
+            )}
+
+            {/* Injeta o Canvas apenas quando a página estiver no viewport e a IA avitvou */}
+            {(isVisible || hasRendered) && (
+                <Page
+                    pageNumber={pageNumber}
+                    width={pageWidth}
+                    className={`shadow-2xl rounded-md overflow-hidden relative z-10 animate-in fade-in duration-500`}
+                    renderTextLayer={true}
+                    renderAnnotationLayer={false}
+                    loading={null}
+                />
+            )}
+
+            {/* Fade Gradiente Mágico para a Última Página da Amostra */}
+            {isSample && isLastSamplePage && (
+                <div className="absolute bottom-0 left-0 w-full h-[60%] bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-transparent z-20 pointer-events-none rounded-b-md" />
+            )}
+        </div>
+    );
+}
+
 export function PdfEbookViewer({ fileUrl, isSample = false }: PdfEbookViewerProps) {
     const [numPages, setNumPages] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -27,11 +102,8 @@ export function PdfEbookViewer({ fileUrl, isSample = false }: PdfEbookViewerProp
 
         const observer = new IntersectionObserver(
             (entries) => {
-                // Find all intersecting entries
                 const visibleEntries = entries.filter(entry => entry.isIntersecting);
                 if (visibleEntries.length > 0) {
-                    // Pick the one that is most visible (highest intersection ratio)
-                    // Or simply the first one that triggered
                     const mostVisible = visibleEntries.reduce((prev, current) =>
                         (prev.intersectionRatio > current.intersectionRatio) ? prev : current
                     );
@@ -39,7 +111,7 @@ export function PdfEbookViewer({ fileUrl, isSample = false }: PdfEbookViewerProp
                     if (pageNum) setCurrentPage(pageNum);
                 }
             },
-            { threshold: [0.3, 0.5, 0.8] } // Trigger at different visibility milestones
+            { threshold: [0.3, 0.5, 0.8] }
         );
 
         const pageElements = document.querySelectorAll(".pdf-page-wrapper");
@@ -48,20 +120,16 @@ export function PdfEbookViewer({ fileUrl, isSample = false }: PdfEbookViewerProp
         return () => observer.disconnect();
     }, [numPages]);
 
-    // Measure container width for responsive rendering (with debounce for mobile zoom stability)
+    // Measure container width for responsive rendering
     useEffect(() => {
         let initialWidth = 0;
         function updateWidth() {
-            // FIREWALL CONTRA CRASH NO SAFARI iOS (Pinch-to-zoom Memory Leak)
-            // Se o usuário está fazendo pinça (zoom in/out na tela), a visualViewport muda a escala.
-            // O Safari dispara eventos 'resize' em massa. Não podemos deixar o react-pdf re-renderizar o canvas agora.
             if (window.visualViewport && window.visualViewport.scale !== 1) {
                 return;
             }
 
             if (containerRef.current) {
                 const newWidth = containerRef.current.clientWidth;
-                // Only update if it's the first time or if the width changed significantly (e.g., orientation change)
                 if (initialWidth === 0 || Math.abs(initialWidth - newWidth) > 50) {
                     initialWidth = newWidth;
                     setContainerWidth(newWidth);
@@ -69,18 +137,17 @@ export function PdfEbookViewer({ fileUrl, isSample = false }: PdfEbookViewerProp
             }
         }
 
-        // Timeout para garantir que o CSS carregou e a ref tem tamanho 
         setTimeout(updateWidth, 100);
 
         let timeoutId: NodeJS.Timeout;
         const resizeHandler = () => {
             clearTimeout(timeoutId);
-            timeoutId = setTimeout(updateWidth, 500); // Debounce longo para não travar o scroll/zoom
+            timeoutId = setTimeout(updateWidth, 500);
         };
 
         const orientationHandler = () => {
             clearTimeout(timeoutId);
-            setTimeout(updateWidth, 500); // Dá tempo pro celular deitar
+            setTimeout(updateWidth, 500);
         };
 
         window.addEventListener("resize", resizeHandler);
@@ -99,26 +166,32 @@ export function PdfEbookViewer({ fileUrl, isSample = false }: PdfEbookViewerProp
 
     const MAX_SAMPLE_PAGES = 3;
     const renderPages = isSample ? Math.min(numPages, MAX_SAMPLE_PAGES) : numPages;
-
-    // PDF page width: fill the container but cap at a comfortable reading size
     const pageWidth = Math.min(containerWidth - 16, 900);
 
     return (
         <div ref={containerRef} className="w-full flex flex-col items-center pb-20">
+            {/* 🐛 DEBUG VISUAL 🐛 */}
+            <div className={`w-full max-w-2xl px-4 py-2 mt-4 mb-6 rounded-md font-mono text-xs md:text-sm font-bold flex justify-between uppercase border-2 border-black shadow-[4px_4px_0_#000] z-40
+                ${isSample ? "bg-[#FDA4AF] text-black" : "bg-[#86EFAC] text-black"}
+            `}>
+                <span>Modo Atual: {isSample ? "AMOSTRA ATIVA!" : "ACESSO TOTAL LIBERADO!"}</span>
+                <span>Páginas: {numPages === 0 ? "?" : `${renderPages}/${numPages}`}</span>
+            </div>
+
             <Document
                 file={fileUrl}
                 onLoadSuccess={onDocumentLoadSuccess}
                 loading={
                     <div className="flex flex-col items-center justify-center py-32 gap-4">
                         <div className="w-10 h-10 border-4 border-zinc-600 border-t-[#60a5fa] rounded-full animate-spin" />
-                        <p className="text-zinc-400 font-serif text-lg">Carregando ebook...</p>
+                        <p className="text-zinc-600 font-serif text-lg font-bold">Iniciando leitura segura...</p>
                     </div>
                 }
                 error={
                     <div className="flex flex-col items-center justify-center py-32 gap-4">
-                        <p className="text-red-400 font-bold text-lg">Erro ao carregar o PDF.</p>
-                        <a href={fileUrl} download className="text-[#60a5fa] underline">
-                            Baixar PDF diretamente
+                        <p className="text-red-500 font-black text-lg">Erro ao carregar o PDF.</p>
+                        <a href={fileUrl} download className="text-blue-600 mt-2 underline font-bold">
+                            Tentar Baixar PDF Diretamente
                         </a>
                     </div>
                 }
@@ -126,26 +199,13 @@ export function PdfEbookViewer({ fileUrl, isSample = false }: PdfEbookViewerProp
             >
                 {renderPages > 0 &&
                     Array.from({ length: renderPages }, (_, index) => (
-                        <div
-                            key={`page_wrapper_${index + 1}`}
-                            className="pdf-page-wrapper w-full flex justify-center mb-4 transition-all duration-700 animate-in fade-in slide-in-from-bottom-8 relative"
-                            data-page-number={index + 1}
-                        >
-                            <Page
-                                pageNumber={index + 1}
-                                width={pageWidth}
-                                className="shadow-2xl rounded-md overflow-hidden relative z-10"
-                                loading={
-                                    <div className="flex items-center justify-center bg-zinc-800/50 rounded-lg" style={{ width: pageWidth, height: pageWidth * 1.414 }}>
-                                        <div className="w-6 h-6 border-2 border-zinc-600 border-t-[#60a5fa] rounded-full animate-spin" />
-                                    </div>
-                                }
-                            />
-                            {/* Fade Gradiente Mágico para a Última Página da Amostra */}
-                            {isSample && index === renderPages - 1 && (
-                                <div className="absolute bottom-0 left-0 w-full h-[60%] bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-transparent z-20 pointer-events-none rounded-b-md" />
-                            )}
-                        </div>
+                        <VirtualizedPdfPage
+                            key={`virtual_page_${index + 1}`}
+                            pageNumber={index + 1}
+                            pageWidth={pageWidth}
+                            isSample={isSample}
+                            isLastSamplePage={index === renderPages - 1}
+                        />
                     ))
                 }
             </Document>
@@ -176,8 +236,8 @@ export function PdfEbookViewer({ fileUrl, isSample = false }: PdfEbookViewerProp
             )}
 
             {renderPages > 0 && (
-                <p className="text-zinc-500 text-sm mt-12 mb-8 font-sans">
-                    {isSample ? `${renderPages} de ${numPages} páginas (Amostra)` : `${numPages} ${numPages === 1 ? "página" : "páginas"}`}
+                <p className="text-zinc-500 text-sm mt-12 mb-8 font-sans font-bold">
+                    {isSample ? `${renderPages} de ${numPages} páginas (Amostra Gratuita)` : `Bíblia Oficial — Ebook ${numPages} páginas`}
                 </p>
             )}
         </div>
