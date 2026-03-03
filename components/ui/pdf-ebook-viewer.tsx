@@ -14,6 +14,7 @@ interface PdfEbookViewerProps {
     fileUrl: string;
     isSample?: boolean;
     isLandscape?: boolean;
+    samplePagesCount?: number;
 }
 
 // Sub-componente mágico: reserva o espaço vertical correto
@@ -100,7 +101,7 @@ function VirtualizedPdfPage({
     );
 }
 
-export function PdfEbookViewer({ fileUrl, isSample = false, isLandscape = false }: PdfEbookViewerProps) {
+export function PdfEbookViewer({ fileUrl, isSample = false, isLandscape = false, samplePagesCount = 3 }: PdfEbookViewerProps) {
     const [numPages, setNumPages] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [containerWidth, setContainerWidth] = useState<number>(800);
@@ -174,8 +175,7 @@ export function PdfEbookViewer({ fileUrl, isSample = false, isLandscape = false 
         setNumPages(numPages);
     }, []);
 
-    const MAX_SAMPLE_PAGES = 3;
-    const renderPages = isSample ? Math.min(numPages, MAX_SAMPLE_PAGES) : numPages;
+    const renderPages = isSample ? Math.min(numPages, samplePagesCount) : numPages;
     const pageWidth = Math.min(containerWidth - 16, 900);
 
     return (

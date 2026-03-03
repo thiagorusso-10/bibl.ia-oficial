@@ -101,9 +101,16 @@ export default async function ReadPage({ params, searchParams }: PageProps) {
         }
     }
 
+    // 🧠 BRAINSTORM/MENTOR DECISION:
+    // How many pages should we show inside the "Sample" mode?
+    // - Ebooks: 8 pages (Cover + Copyright + TOC + Intro + First Chapter). If 3 pages, they see ZERO content.
+    // - Kids Story: 3 pages (Cover + Intro + 1st Scene). Perfect teaser without spoiling.
+    // - Kids Activity: 3 pages (Cover + 2 activities). Perfect teaser before paywall.
+    const samplePagesCount = isKidsStory ? 3 : (isActivity ? 3 : 8);
+
     return (
         <EbookReader title={ebookInfo.title} slug={slug} returnUrl={returnUrl}>
-            <PdfEbookViewer fileUrl={ebookInfo.pdfPath} isSample={!hasAccess} isLandscape={isKidsStory} />
+            <PdfEbookViewer fileUrl={ebookInfo.pdfPath} isSample={!hasAccess} isLandscape={isKidsStory} samplePagesCount={samplePagesCount} />
         </EbookReader>
     );
 }
