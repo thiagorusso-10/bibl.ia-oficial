@@ -20,7 +20,11 @@ export default async function PrecosPage() {
                 title: p.title,
                 description: p.description ?? "",
                 priceInCents: p.priceInCents,
-                ...meta,
+                icon: meta.icon,
+                color: meta.color,
+                highlight: meta.highlight,
+                features: meta.features,
+                checkoutLink: meta.checkoutLink ?? "",
             };
         });
     } catch (error) {
