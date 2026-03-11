@@ -25,6 +25,7 @@ export type ProductCard = {
     color: string;
     highlight?: boolean;
     features: string[];
+    checkoutLink?: string;
 };
 
 export const PRODUCT_META: Record<
@@ -34,11 +35,13 @@ export const PRODUCT_META: Record<
         color: string;
         highlight?: boolean;
         features: string[];
+        checkoutLink: string;
     }
 > = {
     "ebook-plano-redencao": {
         icon: <BookOpen className="w-8 h-8" strokeWidth={2.5} />,
         color: "bg-[#FDE047]", // Yellow Pop
+        checkoutLink: "https://pay.kiwify.com.br/0ERy9ql",
         features: [
             "Ebook completo em PDF",
             "Da Criação à Nova Criação",
@@ -48,6 +51,7 @@ export const PRODUCT_META: Record<
     "ebook-visao-vt": {
         icon: <BookOpen className="w-8 h-8" strokeWidth={2.5} />,
         color: "bg-[#10B981]", // Mint Pop
+        checkoutLink: "https://pay.kiwify.com.br/aQ2IJUy",
         features: [
             "Ebook completo em PDF",
             "39 livros do Antigo Testamento",
@@ -57,6 +61,7 @@ export const PRODUCT_META: Record<
     "ebook-visao-nt": {
         icon: <BookOpen className="w-8 h-8" strokeWidth={2.5} />,
         color: "bg-[#93C5FD]", // Blue Pop
+        checkoutLink: "https://pay.kiwify.com.br/vQtIjXv",
         features: [
             "Ebook completo em PDF",
             "27 livros do Novo Testamento",
@@ -66,6 +71,7 @@ export const PRODUCT_META: Record<
     "kids-atividades": {
         icon: <Baby className="w-8 h-8" strokeWidth={2.5} />,
         color: "bg-[#EC4899]", // Coral Pop
+        checkoutLink: "https://pay.kiwify.com.br/JfaTXfn",
         features: [
             "10 atividades para imprimir",
             "Caça palavras, cruzadinha, colorir",
@@ -75,6 +81,7 @@ export const PRODUCT_META: Record<
     "kids-historias": {
         icon: <Baby className="w-8 h-8" strokeWidth={2.5} />,
         color: "bg-[#A855F7]", // Purple Pop
+        checkoutLink: "https://pay.kiwify.com.br/ZR3B2PY",
         features: [
             "10 histórias ilustradas",
             "De Davi a Daniel",
@@ -84,6 +91,7 @@ export const PRODUCT_META: Record<
     "combo-ebooks": {
         icon: <Gift className="w-8 h-8" strokeWidth={2.5} />,
         color: "bg-[#FDE047]",
+        checkoutLink: "https://pay.kiwify.com.br/TdMHOs7",
         features: [
             "3 ebooks teológicos",
             "Redenção + VT + NT",
@@ -93,6 +101,7 @@ export const PRODUCT_META: Record<
     "combo-kids": {
         icon: <Gift className="w-8 h-8" strokeWidth={2.5} />,
         color: "bg-[#A855F7]",
+        checkoutLink: "https://pay.kiwify.com.br/4ydgUbk",
         features: [
             "Atividades + Histórias",
             "20 materiais para crianças",
@@ -103,6 +112,7 @@ export const PRODUCT_META: Record<
         icon: <Trophy className="w-10 h-10" strokeWidth={2.5} />,
         color: "bg-[#FDE047]",
         highlight: true,
+        checkoutLink: "https://pay.kiwify.com.br/PEPj7iz",
         features: [
             "TUDO incluído",
             "3 ebooks + 20 materiais kids",
@@ -241,7 +251,7 @@ export function PrecosClient({ products }: { products: ProductCard[] }) {
                                             <p className="text-sm font-black uppercase tracking-widest text-zinc-500 mb-6 bg-zinc-100 py-1">
                                                 Pagamento Único
                                             </p>
-                                            <NeoButton variant="primary" size="lg" className="w-full bg-black text-white hover:bg-[#10B981] hover:text-black border-2 text-xl py-6 font-black uppercase flex items-center justify-center gap-3 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none">
+                                            <NeoButton onClick={() => combo.checkoutLink && window.open(combo.checkoutLink, '_blank')} variant="primary" size="lg" className="w-full bg-black text-white hover:bg-[#10B981] hover:text-black border-2 text-xl py-6 font-black uppercase flex items-center justify-center gap-3 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none transition-all">
                                                 <Zap className="w-6 h-6 fill-current" /> Acesso Total
                                             </NeoButton>
                                             <p className="text-xs text-zinc-500 mt-4 font-bold uppercase">
@@ -383,7 +393,7 @@ function ProductCardComponent({ product }: { product: ProductCard }) {
                             <span className="text-sm font-bold uppercase text-zinc-400">Investimento</span>
                             <span className="text-3xl font-black tracking-tighter">{formatPrice(product.priceInCents)}</span>
                         </div>
-                        <NeoButton className="w-full bg-black text-white hover:bg-[#EC4899] hover:text-black border-2 text-lg py-4 font-black uppercase shadow-[4px_4px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">
+                        <NeoButton onClick={() => product.checkoutLink && window.open(product.checkoutLink, '_blank')} className="w-full bg-black text-white hover:bg-[#EC4899] hover:text-black border-2 text-lg py-4 font-black uppercase shadow-[4px_4px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
                             Comprar Agora
                         </NeoButton>
                     </div>

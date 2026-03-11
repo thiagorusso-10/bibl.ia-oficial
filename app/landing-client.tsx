@@ -415,7 +415,7 @@ export function LandingClient({ products }: { products: ProductCard[] }) {
                                                     <p className="text-sm font-black uppercase tracking-widest text-zinc-500 mb-6 bg-zinc-100 py-1">
                                                         Pagamento Único
                                                     </p>
-                                                    <NeoButton variant="primary" size="lg" className="w-full bg-black text-white hover:bg-[#10B981] hover:text-black border-2 text-xl py-6 font-black uppercase flex items-center justify-center gap-3 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none">
+                                                    <NeoButton onClick={() => combo.checkoutLink && window.open(combo.checkoutLink, '_blank')} variant="primary" size="lg" className="w-full bg-black text-white hover:bg-[#10B981] hover:text-black border-2 text-xl py-6 font-black uppercase flex items-center justify-center gap-3 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none">
                                                         <Zap className="w-6 h-6 fill-current" /> Liberar Acesso
                                                     </NeoButton>
                                                 </div>
@@ -484,7 +484,7 @@ export function LandingClient({ products }: { products: ProductCard[] }) {
                                                     <span className="text-sm font-bold uppercase text-zinc-400">À Vista</span>
                                                     <span className="text-4xl font-black tracking-tighter">{formatPrice(product.priceInCents)}</span>
                                                 </div>
-                                                <NeoButton className="w-full bg-black text-white hover:bg-[#FDE047] hover:text-black border-2 border-black text-lg py-6 font-black uppercase shadow-[4px_4px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">
+                                                <NeoButton onClick={() => product.checkoutLink && window.open(product.checkoutLink, '_blank')} className="w-full bg-black text-white hover:bg-[#FDE047] hover:text-black border-2 border-black text-lg py-6 font-black uppercase shadow-[4px_4px_0px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">
                                                     Comprar Agora
                                                 </NeoButton>
                                             </div>
