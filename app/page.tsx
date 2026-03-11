@@ -1,6 +1,6 @@
 import { getActiveProducts } from "@/lib/access";
 import { LandingClient } from "./landing-client";
-import { PRODUCT_META, type ProductCard } from "./(marketing)/precos/precos-client";
+import { PRODUCT_META, type ProductCard } from "@/lib/product-meta";
 
 export const dynamic = "force-dynamic";
 

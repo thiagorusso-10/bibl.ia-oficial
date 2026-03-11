@@ -1,5 +1,6 @@
 import { getActiveProducts } from "@/lib/access";
-import { PrecosClient, PRODUCT_META, type ProductCard } from "./precos-client";
+import { PrecosClient } from "./precos-client";
+import { PRODUCT_META, type ProductCard } from "@/lib/product-meta";
 
 export const dynamic = "force-dynamic";
 

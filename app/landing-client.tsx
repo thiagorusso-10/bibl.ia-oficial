@@ -21,7 +21,7 @@ import {
     Gift,
     Flame
 } from "lucide-react";
-import type { ProductCard } from "@/app/(marketing)/precos/precos-client";
+import type { ProductCard } from "@/lib/product-meta";
 import { Check } from "lucide-react";
 import { AnimatedCard } from "@/components/ui/animated-card";
 
