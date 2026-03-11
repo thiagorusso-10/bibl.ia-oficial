@@ -1,6 +1,5 @@
 import { getActiveProducts } from "@/lib/access";
 import { PrecosClient, PRODUCT_META, type ProductCard } from "./precos-client";
-import { BookOpen } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +10,6 @@ export default async function PrecosPage() {
         const raw = await getActiveProducts();
         products = raw.map((p) => {
             const meta = PRODUCT_META[p.slug] ?? {
-                icon: <BookOpen className="w-6 h-6" />,
                 color: "bg-white",
                 features: [],
             };
@@ -20,7 +18,6 @@ export default async function PrecosPage() {
                 title: p.title,
                 description: p.description ?? "",
                 priceInCents: p.priceInCents,
-                icon: meta.icon,
                 color: meta.color,
                 highlight: meta.highlight,
                 features: meta.features,

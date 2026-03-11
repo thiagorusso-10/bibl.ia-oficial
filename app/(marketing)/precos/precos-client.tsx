@@ -21,7 +21,6 @@ export type ProductCard = {
     title: string;
     description: string;
     priceInCents: number;
-    icon: React.ReactNode;
     color: string;
     highlight?: boolean;
     features: string[];
@@ -31,7 +30,6 @@ export type ProductCard = {
 export const PRODUCT_META: Record<
     string,
     {
-        icon: React.ReactNode;
         color: string;
         highlight?: boolean;
         features: string[];
@@ -39,8 +37,7 @@ export const PRODUCT_META: Record<
     }
 > = {
     "ebook-plano-redencao": {
-        icon: <BookOpen className="w-8 h-8" strokeWidth={2.5} />,
-        color: "bg-[#FDE047]", // Yellow Pop
+        color: "bg-[#FDE047]",
         checkoutLink: "https://pay.kiwify.com.br/0ERy9ql",
         features: [
             "Ebook completo em PDF",
@@ -49,8 +46,7 @@ export const PRODUCT_META: Record<
         ],
     },
     "ebook-visao-vt": {
-        icon: <BookOpen className="w-8 h-8" strokeWidth={2.5} />,
-        color: "bg-[#10B981]", // Mint Pop
+        color: "bg-[#10B981]",
         checkoutLink: "https://pay.kiwify.com.br/aQ2IJUy",
         features: [
             "Ebook completo em PDF",
@@ -59,8 +55,7 @@ export const PRODUCT_META: Record<
         ],
     },
     "ebook-visao-nt": {
-        icon: <BookOpen className="w-8 h-8" strokeWidth={2.5} />,
-        color: "bg-[#93C5FD]", // Blue Pop
+        color: "bg-[#93C5FD]",
         checkoutLink: "https://pay.kiwify.com.br/vQtIjXv",
         features: [
             "Ebook completo em PDF",
@@ -69,8 +64,7 @@ export const PRODUCT_META: Record<
         ],
     },
     "kids-atividades": {
-        icon: <Baby className="w-8 h-8" strokeWidth={2.5} />,
-        color: "bg-[#EC4899]", // Coral Pop
+        color: "bg-[#EC4899]",
         checkoutLink: "https://pay.kiwify.com.br/JfaTXfn",
         features: [
             "10 atividades para imprimir",
@@ -79,8 +73,7 @@ export const PRODUCT_META: Record<
         ],
     },
     "kids-historias": {
-        icon: <Baby className="w-8 h-8" strokeWidth={2.5} />,
-        color: "bg-[#A855F7]", // Purple Pop
+        color: "bg-[#A855F7]",
         checkoutLink: "https://pay.kiwify.com.br/ZR3B2PY",
         features: [
             "10 histórias ilustradas",
@@ -89,7 +82,6 @@ export const PRODUCT_META: Record<
         ],
     },
     "combo-ebooks": {
-        icon: <Gift className="w-8 h-8" strokeWidth={2.5} />,
         color: "bg-[#FDE047]",
         checkoutLink: "https://pay.kiwify.com.br/TdMHOs7",
         features: [
@@ -99,7 +91,6 @@ export const PRODUCT_META: Record<
         ],
     },
     "combo-kids": {
-        icon: <Gift className="w-8 h-8" strokeWidth={2.5} />,
         color: "bg-[#A855F7]",
         checkoutLink: "https://pay.kiwify.com.br/4ydgUbk",
         features: [
@@ -109,7 +100,6 @@ export const PRODUCT_META: Record<
         ],
     },
     "combo-tudo": {
-        icon: <Trophy className="w-10 h-10" strokeWidth={2.5} />,
         color: "bg-[#FDE047]",
         highlight: true,
         checkoutLink: "https://pay.kiwify.com.br/PEPj7iz",
@@ -366,7 +356,7 @@ function ProductCardComponent({ product }: { product: ProductCard }) {
             <div className={`flex flex-col h-full bg-white border-4 border-black p-0 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-2 transition-all duration-300 group`}>
                 <div className={`p-6 border-b-4 border-black ${product.color} flex items-center justify-between`}>
                     <div className="bg-white p-3 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:rotate-12 transition-transform">
-                        {product.icon}
+                        {product.slug.startsWith("kids-") ? <Baby className="w-8 h-8" strokeWidth={2.5} /> : product.slug.startsWith("combo-") ? <Gift className="w-8 h-8" strokeWidth={2.5} /> : <BookOpen className="w-8 h-8" strokeWidth={2.5} />}
                     </div>
                     <span className="font-black text-4xl tracking-tighter opacity-20">#01</span>
                 </div>

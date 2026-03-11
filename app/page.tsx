@@ -1,7 +1,6 @@
 import { getActiveProducts } from "@/lib/access";
 import { LandingClient } from "./landing-client";
 import { PRODUCT_META, type ProductCard } from "./(marketing)/precos/precos-client";
-import { BookOpen } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +11,6 @@ export default async function HomePage() {
     const raw = await getActiveProducts();
     products = raw.map((p) => {
       const meta = PRODUCT_META[p.slug] ?? {
-        icon: <BookOpen className="w-6 h-6" />,
         color: "bg-white",
         features: [],
       };
@@ -21,7 +19,6 @@ export default async function HomePage() {
         title: p.title,
         description: p.description ?? "",
         priceInCents: p.priceInCents,
-        icon: meta.icon,
         color: meta.color,
         highlight: meta.highlight,
         features: meta.features,
